@@ -1,0 +1,6 @@
+{
+  "name": "VDK Studio - Cinematic AI Video Suite",
+  "description": "Next-generation neural recreate, style matrix, beat-sync pacing, and lossless broadcast export suite.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
