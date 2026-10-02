@@ -20,7 +20,7 @@ import { Toast, ToastMessage } from './components/Toast';
 import { MediaProvider } from './context/MediaContext';
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState<NavScreen>('my-projects');
+  const [currentScreen, setCurrentScreen] = useState<NavScreen>('ai-recreate-and-edit');
   const [projects, setProjects] = useState<Project[]>([
     INITIAL_FEATURED_PROJECT,
     ...INITIAL_PROJECTS,

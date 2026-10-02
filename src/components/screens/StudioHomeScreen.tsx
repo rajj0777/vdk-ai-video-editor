@@ -65,6 +65,80 @@ export const StudioHomeScreen: React.FC<StudioHomeScreenProps> = ({
         </div>
       </div>
 
+      {/* VDK Simple 3-Step Workflow Core */}
+      <div className="p-6 rounded-2xl bg-[#191b26] border border-[#272935] shadow-xl flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#272935] pb-3">
+          <div>
+            <span className="font-['JetBrains_Mono'] text-[10px] uppercase text-[#4cd7f6] font-semibold tracking-wider">
+              VDK Core Workflow
+            </span>
+            <h2 className="font-['Space_Grotesk'] text-xl font-semibold text-[#e1e1f1]">
+              AI Video Editor • 3 Simple Steps
+            </h2>
+          </div>
+          <button
+            onClick={() => onNavigate('ai-recreate-and-edit')}
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#8083ff] to-[#4cd7f6] text-[#001f26] font-semibold text-xs transition-all hover:brightness-110 cursor-pointer shadow-md self-start sm:self-auto flex items-center gap-1.5"
+          >
+            <span>Start Edit</span>
+            <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+          {/* STEP 1 */}
+          <div
+            onClick={() => onNavigate('ai-recreate-and-edit')}
+            className="p-4 rounded-xl bg-[#11131e] border border-[#272935] hover:border-[#4cd7f6]/60 cursor-pointer transition-all flex flex-col gap-2 group"
+          >
+            <span className="font-mono text-[10px] text-[#4cd7f6] font-bold uppercase">STEP 1</span>
+            <h3 className="font-semibold text-sm text-[#e1e1f1] group-hover:text-[#4cd7f6] transition-colors">
+              Upload Reference Video
+            </h3>
+            <p className="text-xs text-[#c7c4d7]">
+              Select 1 reference Reel or video to capture pacing, speed ramps, and cadence.
+            </p>
+            <span className="text-xs text-[#4cd7f6] font-mono mt-auto flex items-center gap-1 pt-2">
+              + Upload Reference →
+            </span>
+          </div>
+
+          {/* STEP 2 */}
+          <div
+            onClick={() => onNavigate('ai-recreate-and-edit')}
+            className="p-4 rounded-xl bg-[#11131e] border border-[#272935] hover:border-[#c0c1ff]/60 cursor-pointer transition-all flex flex-col gap-2 group"
+          >
+            <span className="font-mono text-[10px] text-[#c0c1ff] font-bold uppercase">STEP 2</span>
+            <h3 className="font-semibold text-sm text-[#e1e1f1] group-hover:text-[#c0c1ff] transition-colors">
+              Add Your Media
+            </h3>
+            <p className="text-xs text-[#c7c4d7]">
+              Select multiple photos and videos from your device. Keep adding as many as you want.
+            </p>
+            <span className="text-xs text-[#c0c1ff] font-mono mt-auto flex items-center gap-1 pt-2">
+              + Add Photos & Videos →
+            </span>
+          </div>
+
+          {/* STEP 3 */}
+          <div
+            onClick={() => onNavigate('ai-recreate-and-edit')}
+            className="p-4 rounded-xl bg-[#11131e] border border-[#272935] hover:border-[#4cd7f6]/60 cursor-pointer transition-all flex flex-col gap-2 group"
+          >
+            <span className="font-mono text-[10px] text-[#4cd7f6] font-bold uppercase">STEP 3</span>
+            <h3 className="font-semibold text-sm text-[#e1e1f1] group-hover:text-[#4cd7f6] transition-colors">
+              CREATE MY EDIT
+            </h3>
+            <p className="text-xs text-[#c7c4d7]">
+              VDK AI analyzes all files, generates a beat-synced timeline, and lets you ask for changes.
+            </p>
+            <span className="text-xs text-[#4cd7f6] font-mono mt-auto flex items-center gap-1 pt-2">
+              Generate & Ask AI →
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* 3 Quick Launch Module Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Card 1 */}

@@ -184,6 +184,15 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
         <div className="hidden sm:flex flex-wrap items-center gap-2 shrink-0">
           <button
             type="button"
+            onClick={() => anyMediaInputRef.current?.click()}
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#8083ff] to-[#4cd7f6] hover:brightness-110 active:scale-95 text-[#001f26] font-semibold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-md"
+          >
+            <span className="material-symbols-outlined text-[18px]">add_photo_alternate</span>
+            <span>+ Add Photos & Videos</span>
+          </button>
+
+          <button
+            type="button"
             onClick={() => videoInputRef.current?.click()}
             className="px-3 py-2 rounded-xl bg-[#272935] hover:bg-[#373845] text-[#e1e1f1] font-semibold text-xs transition-all flex items-center gap-1.5 cursor-pointer border border-[#373845]"
           >
@@ -199,55 +208,39 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
             <span className="material-symbols-outlined text-[#c0c1ff] text-[18px]">photo_camera</span>
             <span>+ Add Photos</span>
           </button>
-
-          <button
-            type="button"
-            onClick={() => anyMediaInputRef.current?.click()}
-            className="px-3 py-2 rounded-xl bg-gradient-to-r from-[#8083ff]/30 to-[#4cd7f6]/30 hover:from-[#8083ff]/40 hover:to-[#4cd7f6]/40 text-[#e1e1f1] font-semibold text-xs transition-all flex items-center gap-1.5 cursor-pointer border border-[#4cd7f6]/40 shadow-sm"
-          >
-            <span className="material-symbols-outlined text-[#4cd7f6] text-[18px]">upload</span>
-            <span>+ Add Media</span>
-          </button>
         </div>
       </div>
 
       {/* Mobile-optimized action buttons */}
-      <div className="grid grid-cols-2 xs:grid-cols-4 gap-2 sm:hidden">
+      <div className="flex flex-col gap-2 sm:hidden">
         <button
           type="button"
-          onClick={() => cameraPhotoInputRef.current?.click()}
-          className="p-2.5 rounded-xl bg-[#191b26] hover:bg-[#272935] text-[#e1e1f1] text-[11px] font-medium border border-[#272935] flex flex-col items-center justify-center gap-1 cursor-pointer"
+          onClick={() => anyMediaInputRef.current?.click()}
+          className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#8083ff] to-[#4cd7f6] text-[#001f26] font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-98"
         >
-          <span className="material-symbols-outlined text-[#c0c1ff] text-[20px]">photo_camera</span>
-          <span>Take Photo</span>
+          <span className="material-symbols-outlined text-[20px]">photo_library</span>
+          <span>📷 Add Photos & Videos</span>
         </button>
 
-        <button
-          type="button"
-          onClick={() => cameraVideoInputRef.current?.click()}
-          className="p-2.5 rounded-xl bg-[#191b26] hover:bg-[#272935] text-[#e1e1f1] text-[11px] font-medium border border-[#272935] flex flex-col items-center justify-center gap-1 cursor-pointer"
-        >
-          <span className="material-symbols-outlined text-[#ffb4ab] text-[20px]">videocam</span>
-          <span>Record Video</span>
-        </button>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => cameraPhotoInputRef.current?.click()}
+            className="p-2.5 rounded-xl bg-[#191b26] hover:bg-[#272935] text-[#e1e1f1] text-[11px] font-medium border border-[#272935] flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[#c0c1ff] text-[18px]">photo_camera</span>
+            <span>Take Photo</span>
+          </button>
 
-        <button
-          type="button"
-          onClick={() => photoInputRef.current?.click()}
-          className="p-2.5 rounded-xl bg-[#191b26] hover:bg-[#272935] text-[#e1e1f1] text-[11px] font-medium border border-[#272935] flex flex-col items-center justify-center gap-1 cursor-pointer"
-        >
-          <span className="material-symbols-outlined text-[#4cd7f6] text-[20px]">image</span>
-          <span>Choose Photos</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => videoInputRef.current?.click()}
-          className="p-2.5 rounded-xl bg-[#191b26] hover:bg-[#272935] text-[#e1e1f1] text-[11px] font-medium border border-[#272935] flex flex-col items-center justify-center gap-1 cursor-pointer"
-        >
-          <span className="material-symbols-outlined text-[#acedff] text-[20px]">movie</span>
-          <span>Choose Videos</span>
-        </button>
+          <button
+            type="button"
+            onClick={() => cameraVideoInputRef.current?.click()}
+            className="p-2.5 rounded-xl bg-[#191b26] hover:bg-[#272935] text-[#e1e1f1] text-[11px] font-medium border border-[#272935] flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[#ffb4ab] text-[18px]">videocam</span>
+            <span>Record Video</span>
+          </button>
+        </div>
       </div>
 
       {/* Drag & Drop Zone */}

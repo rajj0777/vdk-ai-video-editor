@@ -57,3 +57,30 @@ export interface ReferenceMedia {
   duration?: number;
   durationFormatted?: string;
 }
+
+export interface TimelineClip {
+  id: string;
+  mediaId: string;
+  media: MediaItem;
+  startTime: number;
+  duration: number;
+  speed: number;
+  transition: string;
+  zoom: 'none' | 'slow-zoom-in' | 'slow-zoom-out' | 'punch-in';
+  textOverlay?: string;
+}
+
+export interface AIEditingPlan {
+  id: string;
+  title: string;
+  totalDuration: number;
+  bpm: number;
+  styleName: string;
+  aspectRatio: AspectRatio;
+  allMediaCount: number;
+  usedMediaCount: number;
+  useAllMedia: boolean;
+  clips: TimelineClip[];
+  summary: string;
+  changesHistory: string[];
+}
