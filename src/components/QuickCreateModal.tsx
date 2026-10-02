@@ -23,6 +23,32 @@ export const QuickCreateModal: React.FC<QuickCreateModalProps> = ({
   const [resolution, setResolution] = useState<Resolution>('1080p');
   const [isProcessing, setIsProcessing] = useState(false);
   const [progressStep, setProgressStep] = useState('');
+  const [uploadedFileItem, setUploadedFileItem] = useState<{
+    file: File;
+    previewUrl: string;
+    type: 'image' | 'video';
+  } | null>(null);
+
+  const deviceInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleDeviceUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const isVideo = file.type.startsWith('video/') || file.name.endsWith('.mp4') || file.name.endsWith('.mov');
+    const previewUrl = URL.createObjectURL(file);
+
+    setUploadedFileItem({
+      file,
+      previewUrl,
+      type: isVideo ? 'video' : 'image',
+    });
+    setSelectedAsset(previewUrl);
+
+    if (!title.trim()) {
+      setTitle(file.name.replace(/\.[^/.]+$/, ''));
+    }
+  };
 
   const samplePresets = [
     { name: 'Tokyo Neon Cyber Walk', url: ASSETS.tokyoNeon, bpm: 130, cat: 'TOKYO NEON CINEMATIC' },
@@ -74,31 +100,31 @@ export const QuickCreateModal: React.FC<QuickCreateModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
-      <div className="relative w-full max-w-xl rounded-2xl bg-[#191b26] border border-[#272935] shadow-2xl p-6 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
+      <div className="relative w-full max-w-xl rounded-2xl bg-[#191b26] border border-[#272935] shadow-2xl p-4 sm:p-6 overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-[#272935]">
+        <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-[#272935]">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[#4cd7f6] text-[24px]">auto_awesome</span>
+            <span className="material-symbols-outlined text-[#4cd7f6] text-[22px] sm:text-[24px]">auto_awesome</span>
             <div>
-              <h3 className="font-['Space_Grotesk'] text-lg font-semibold text-[#e1e1f1]">
+              <h3 className="font-['Space_Grotesk'] text-base sm:text-lg font-semibold text-[#e1e1f1]">
                 Quick Create: Neural Recreate & Speed-Sync
               </h3>
-              <p className="text-[11px] font-mono text-[#c7c4d7]">
+              <p className="text-[10px] sm:text-[11px] font-mono text-[#c7c4d7]">
                 Generate broadcast-ready edits with AI cadence matching
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-[#c7c4d7] hover:text-[#e1e1f1] hover:bg-[#272935]"
+            className="p-1 rounded-lg text-[#c7c4d7] hover:text-[#e1e1f1] hover:bg-[#272935] cursor-pointer"
           >
             <span className="material-symbols-outlined text-[20px]">close</span>
           </button>
         </div>
 
         {/* Content */}
-        <div className="py-4 flex flex-col gap-4 max-h-[75vh] overflow-y-auto">
+        <div className="py-3 sm:py-4 flex flex-col gap-3.5 sm:gap-4 max-h-[75vh] overflow-y-auto">
           {/* Edit Name */}
           <div className="flex flex-col gap-1">
             <label className="text-xs font-mono text-[#c7c4d7] uppercase">Project Title</label>
@@ -113,10 +139,72 @@ export const QuickCreateModal: React.FC<QuickCreateModalProps> = ({
 
           {/* Reference Footage Selection */}
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-mono text-[#c7c4d7] uppercase">
-              Reference Visual Inspiration
-            </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-mono text-[#c7c4d7] uppercase">
+                Reference Visual Inspiration
+              </label>
+              <button
+                type="button"
+                onClick={() => deviceInputRef.current?.click()}
+                className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-[#272935] hover:bg-[#373845] text-[#4cd7f6] flex items-center gap-1 cursor-pointer border border-[#373845]"
+              >
+                <span className="material-symbols-outlined text-[16px]">upload_file</span>
+                <span>Upload from Device</span>
+              </button>
+            </div>
+
+            {/* Hidden native input for OS file picker */}
+            <input
+              ref={deviceInputRef}
+              type="file"
+              accept="image/*,video/*"
+              className="hidden"
+              onChange={handleDeviceUpload}
+            />
+
+            {/* If user uploaded custom media from device */}
+            {uploadedFileItem && (
+              <div
+                onClick={() => setSelectedAsset(uploadedFileItem.previewUrl)}
+                className={`p-3 rounded-xl border flex items-center gap-3 cursor-pointer transition-all ${
+                  selectedAsset === uploadedFileItem.previewUrl
+                    ? 'border-[#4cd7f6] bg-[#272935] shadow-[0_0_15px_rgba(76,215,246,0.15)]'
+                    : 'border-[#272935] bg-[#11131e]'
+                }`}
+              >
+                <div className="w-14 h-14 rounded-lg overflow-hidden bg-black shrink-0 relative">
+                  {uploadedFileItem.type === 'video' ? (
+                    <video
+                      src={uploadedFileItem.previewUrl}
+                      className="w-full h-full object-cover"
+                      muted
+                    />
+                  ) : (
+                    <img
+                      src={uploadedFileItem.previewUrl}
+                      alt="Uploaded preview"
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                  <span className="absolute bottom-1 right-1 px-1 rounded bg-black/80 font-mono text-[9px] text-[#4cd7f6]">
+                    {uploadedFileItem.type.toUpperCase()}
+                  </span>
+                </div>
+                <div className="flex flex-col min-w-0 flex-1">
+                  <span className="text-xs font-semibold text-[#e1e1f1] truncate">
+                    {uploadedFileItem.file.name}
+                  </span>
+                  <span className="text-[10px] text-[#4cd7f6] font-mono mt-0.5">
+                    Uploaded from Device • Ready for Neural Sync
+                  </span>
+                </div>
+                <span className="material-symbols-outlined text-[#4cd7f6] text-[20px]">
+                  check_circle
+                </span>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {samplePresets.map((sample) => (
                 <div
                   key={sample.name}
@@ -130,7 +218,7 @@ export const QuickCreateModal: React.FC<QuickCreateModalProps> = ({
                   <img
                     src={sample.url}
                     alt={sample.name}
-                    className="w-12 h-12 rounded-lg object-cover"
+                    className="w-12 h-12 rounded-lg object-cover shrink-0"
                   />
                   <div className="flex flex-col min-w-0">
                     <span className="text-xs font-semibold text-[#e1e1f1] truncate">
@@ -148,7 +236,7 @@ export const QuickCreateModal: React.FC<QuickCreateModalProps> = ({
           {/* Neural Model Engine */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-mono text-[#c7c4d7] uppercase">Neural Engine</label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               {[
                 { id: 'vdk-v3.4-speed', label: 'VDK v3.4 Speed-Sync', desc: 'Auto BPM Ramp' },
                 { id: 'vdk-lut-master', label: 'Spectral Matcher', desc: 'Teal/Orange LUT' },
@@ -158,7 +246,7 @@ export const QuickCreateModal: React.FC<QuickCreateModalProps> = ({
                   key={engine.id}
                   type="button"
                   onClick={() => setModelEngine(engine.id)}
-                  className={`p-2 rounded-xl text-left border text-xs transition-all ${
+                  className={`p-2.5 rounded-xl text-left border text-xs transition-all cursor-pointer ${
                     modelEngine === engine.id
                       ? 'border-[#c0c1ff] bg-[#272935] text-[#e1e1f1]'
                       : 'border-[#272935] bg-[#11131e] text-[#c7c4d7]'
@@ -229,23 +317,23 @@ export const QuickCreateModal: React.FC<QuickCreateModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-3 border-t border-[#272935]">
-          <span className="text-[11px] font-mono text-[#4cd7f6] flex items-center gap-1">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3 border-t border-[#272935]">
+          <span className="text-[10px] sm:text-[11px] font-mono text-[#4cd7f6] flex items-center justify-center sm:justify-start gap-1">
             <span className="h-1.5 w-1.5 rounded-full bg-[#4cd7f6]"></span>
             Unlimited GPU Compute Available
           </span>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-end gap-2">
             <button
               onClick={onClose}
               disabled={isProcessing}
-              className="px-3 py-1.5 text-xs rounded-lg bg-[#272935] text-[#c7c4d7] hover:bg-[#373845]"
+              className="flex-1 sm:flex-none px-3.5 py-2 text-xs rounded-xl bg-[#272935] text-[#c7c4d7] hover:bg-[#373845] cursor-pointer"
             >
               Cancel
             </button>
             <button
               onClick={handleGenerate}
               disabled={isProcessing}
-              className="px-4 py-2 text-xs font-semibold rounded-lg bg-gradient-to-r from-[#8083ff] to-[#4cd7f6] text-[#001f26] hover:brightness-110 shadow-lg cursor-pointer"
+              className="flex-1 sm:flex-none px-4 py-2 text-xs font-semibold rounded-xl bg-gradient-to-r from-[#8083ff] to-[#4cd7f6] text-[#001f26] hover:brightness-110 shadow-lg cursor-pointer"
             >
               {isProcessing ? 'Rendering...' : 'Synthesize Edit'}
             </button>

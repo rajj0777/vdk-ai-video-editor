@@ -44,8 +44,8 @@ export const FaceShieldModal: React.FC<FaceShieldModalProps> = ({
 
         <div className="py-4 flex flex-col gap-3">
           {/* Item 1 */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#11131e] border border-[#272935]">
-            <div className="flex flex-col pr-4">
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#11131e] border border-[#272935] gap-3">
+            <div className="flex flex-col">
               <span className="text-xs font-semibold text-[#e1e1f1]">
                 Zero-Biometric Coordinate Policy
               </span>
@@ -55,7 +55,7 @@ export const FaceShieldModal: React.FC<FaceShieldModalProps> = ({
             </div>
             <button
               onClick={() => setBiometricShield(!biometricShield)}
-              className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
+              className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer shrink-0 ${
                 biometricShield ? 'bg-[#4cd7f6]' : 'bg-[#373845]'
               }`}
             >
@@ -68,8 +68,8 @@ export const FaceShieldModal: React.FC<FaceShieldModalProps> = ({
           </div>
 
           {/* Item 2 */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#11131e] border border-[#272935]">
-            <div className="flex flex-col pr-4">
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#11131e] border border-[#272935] gap-3">
+            <div className="flex flex-col">
               <span className="text-xs font-semibold text-[#e1e1f1]">
                 Ephemeral Edge Cache Purge
               </span>
@@ -79,7 +79,7 @@ export const FaceShieldModal: React.FC<FaceShieldModalProps> = ({
             </div>
             <button
               onClick={() => setEphemeralStorage(!ephemeralStorage)}
-              className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
+              className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer shrink-0 ${
                 ephemeralStorage ? 'bg-[#4cd7f6]' : 'bg-[#373845]'
               }`}
             >
@@ -92,8 +92,8 @@ export const FaceShieldModal: React.FC<FaceShieldModalProps> = ({
           </div>
 
           {/* Item 3 */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#11131e] border border-[#272935]">
-            <div className="flex flex-col pr-4">
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#11131e] border border-[#272935] gap-3">
+            <div className="flex flex-col">
               <span className="text-xs font-semibold text-[#e1e1f1]">
                 100% Watermark-Free Export Rights
               </span>
@@ -103,7 +103,7 @@ export const FaceShieldModal: React.FC<FaceShieldModalProps> = ({
             </div>
             <button
               onClick={() => setWatermarkStripping(!watermarkStripping)}
-              className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
+              className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer shrink-0 ${
                 watermarkStripping ? 'bg-[#4cd7f6]' : 'bg-[#373845]'
               }`}
             >
@@ -116,8 +116,8 @@ export const FaceShieldModal: React.FC<FaceShieldModalProps> = ({
           </div>
 
           {/* Item 4 */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#11131e] border border-[#272935]">
-            <div className="flex flex-col pr-4">
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[#11131e] border border-[#272935] gap-3">
+            <div className="flex flex-col">
               <span className="text-xs font-semibold text-[#e1e1f1]">
                 Commercial Broadcast License
               </span>
@@ -127,7 +127,7 @@ export const FaceShieldModal: React.FC<FaceShieldModalProps> = ({
             </div>
             <button
               onClick={() => setCommercialLicense(!commercialLicense)}
-              className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
+              className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer shrink-0 ${
                 commercialLicense ? 'bg-[#4cd7f6]' : 'bg-[#373845]'
               }`}
             >
@@ -143,13 +143,13 @@ export const FaceShieldModal: React.FC<FaceShieldModalProps> = ({
         <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#272935]">
           <button
             onClick={onClose}
-            className="px-3 py-1.5 text-xs rounded-lg bg-[#272935] text-[#c7c4d7]"
+            className="px-3.5 py-2 text-xs rounded-xl bg-[#272935] text-[#c7c4d7] hover:bg-[#373845] cursor-pointer"
           >
             Close
           </button>
           <button
             onClick={handleSave}
-            className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-[#4cd7f6] text-[#001f26] hover:brightness-110"
+            className="px-4 py-2 text-xs font-semibold rounded-xl bg-[#4cd7f6] text-[#001f26] hover:brightness-110 cursor-pointer shadow-lg"
           >
             Save Protection Rules
           </button>

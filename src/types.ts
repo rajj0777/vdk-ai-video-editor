@@ -30,3 +30,30 @@ export interface ShareTarget {
   subtitle: string;
   icon: string;
 }
+
+export interface MediaItem {
+  id: string;
+  file: File;
+  name: string;
+  size: number;
+  sizeFormatted: string;
+  type: 'image' | 'video';
+  mimeType: string;
+  previewUrl: string;
+  duration?: number;
+  durationFormatted?: string;
+  uploadedAt: Date;
+  uploadProgress?: number;
+}
+
+export interface ReferenceMedia {
+  sourceType: 'file' | 'url';
+  file?: File;
+  url?: string;
+  previewUrl?: string;
+  name?: string;
+  size?: number;
+  sizeFormatted?: string;
+  duration?: number;
+  durationFormatted?: string;
+}

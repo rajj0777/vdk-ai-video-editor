@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ASSETS } from '../data/mockData';
+import { useMedia } from '../context/MediaContext';
 
 interface UserSafeguardsSidebarProps {
   onShowToast: (message: string, type?: 'success' | 'info') => void;
@@ -10,6 +11,7 @@ export const UserSafeguardsSidebar: React.FC<UserSafeguardsSidebarProps> = ({
   onShowToast,
   onOpenFaceShield,
 }) => {
+  const { clearAllUserMedia } = useMedia();
   const [isPurging, setIsPurging] = useState(false);
   const [isPurged, setIsPurged] = useState(false);
 
@@ -23,6 +25,7 @@ export const UserSafeguardsSidebar: React.FC<UserSafeguardsSidebarProps> = ({
     onShowToast('Initiating zero-knowledge storage purge...', 'info');
 
     setTimeout(() => {
+      clearAllUserMedia();
       setIsPurging(false);
       setIsPurged(true);
       onShowToast('Edge cache storage purged losslessly. 0 bytes retained.', 'success');
@@ -34,7 +37,7 @@ export const UserSafeguardsSidebar: React.FC<UserSafeguardsSidebarProps> = ({
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:flex xl:flex-col gap-4">
       {/* Creator Identity Dock */}
       <div className="flex flex-col p-5 rounded-2xl bg-[#191b26] border border-[#272935] shadow-xl">
         <div className="flex items-center gap-3.5">

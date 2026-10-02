@@ -17,6 +17,7 @@ import { ShareModal } from './components/ShareModal';
 import { RenameModal } from './components/RenameModal';
 import { FaceShieldModal } from './components/FaceShieldModal';
 import { Toast, ToastMessage } from './components/Toast';
+import { MediaProvider } from './context/MediaContext';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<NavScreen>('my-projects');
@@ -130,103 +131,105 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0b0e18] text-[#e1e1f1] flex flex-col font-['Geist'] selection:bg-[#c0c1ff] selection:text-[#1000a9]">
-      {/* Top Header */}
-      <Header
-        currentScreen={currentScreen}
-        onNavigate={(screen) => setCurrentScreen(screen)}
-        onOpenQuickCreate={() => setIsQuickCreateOpen(true)}
-        onOpenFaceShield={() => setIsFaceShieldOpen(true)}
-      />
+    <MediaProvider>
+      <div className="min-h-screen bg-[#0b0e18] text-[#e1e1f1] flex flex-col font-['Geist'] selection:bg-[#c0c1ff] selection:text-[#1000a9]">
+        {/* Top Header */}
+        <Header
+          currentScreen={currentScreen}
+          onNavigate={(screen) => setCurrentScreen(screen)}
+          onOpenQuickCreate={() => setIsQuickCreateOpen(true)}
+          onOpenFaceShield={() => setIsFaceShieldOpen(true)}
+        />
 
-      {/* Main Content Area */}
-      <main className="w-full pt-16 flex-1 flex flex-col">
-        {currentScreen === 'my-projects' && (
-          <MyProjectsScreen
-            projects={projects}
-            activeProject={activeProject}
-            onSelectProject={handleSelectProject}
-            onDuplicateProject={handleDuplicateProject}
-            onOpenRenameModal={(p) => setRenameTargetProject(p)}
-            onDeleteProject={handleDeleteProject}
-            onReExportProject={handleReExport}
-            onOpenShareModal={(platform) =>
-              setShareModalConfig({ isOpen: true, platform })
-            }
-            onShowToast={showToast}
-            onUpdateActiveProject={handleUpdateActiveProject}
-            onOpenFaceShield={() => setIsFaceShieldOpen(true)}
-          />
-        )}
+        {/* Main Content Area */}
+        <main className="w-full pt-16 pb-28 xl:pb-8 flex-1 flex flex-col">
+          {currentScreen === 'my-projects' && (
+            <MyProjectsScreen
+              projects={projects}
+              activeProject={activeProject}
+              onSelectProject={handleSelectProject}
+              onDuplicateProject={handleDuplicateProject}
+              onOpenRenameModal={(p) => setRenameTargetProject(p)}
+              onDeleteProject={handleDeleteProject}
+              onReExportProject={handleReExport}
+              onOpenShareModal={(platform) =>
+                setShareModalConfig({ isOpen: true, platform })
+              }
+              onShowToast={showToast}
+              onUpdateActiveProject={handleUpdateActiveProject}
+              onOpenFaceShield={() => setIsFaceShieldOpen(true)}
+            />
+          )}
 
-        {currentScreen === 'ai-recreate-and-edit' && (
-          <AIRecreateScreen
-            onAddNewProject={handleAddNewProject}
-            onShowToast={showToast}
-            onNavigateToProjects={() => setCurrentScreen('my-projects')}
-          />
-        )}
+          {currentScreen === 'ai-recreate-and-edit' && (
+            <AIRecreateScreen
+              onAddNewProject={handleAddNewProject}
+              onShowToast={showToast}
+              onNavigateToProjects={() => setCurrentScreen('my-projects')}
+            />
+          )}
 
-        {currentScreen === 'style-matrix' && (
-          <StyleMatrixScreen
-            activeProject={activeProject}
-            onApplyStyleToProject={handleApplyStyleToProject}
-            onShowToast={showToast}
-            onNavigateToProjects={() => setCurrentScreen('my-projects')}
-          />
-        )}
+          {currentScreen === 'style-matrix' && (
+            <StyleMatrixScreen
+              activeProject={activeProject}
+              onApplyStyleToProject={handleApplyStyleToProject}
+              onShowToast={showToast}
+              onNavigateToProjects={() => setCurrentScreen('my-projects')}
+            />
+          )}
 
-        {currentScreen === 'studio-home' && (
-          <StudioHomeScreen
-            onNavigate={(screen) => setCurrentScreen(screen)}
-            onOpenQuickCreate={() => setIsQuickCreateOpen(true)}
-            recentProjects={projects}
-            onSelectProject={handleSelectProject}
-          />
-        )}
-      </main>
+          {currentScreen === 'studio-home' && (
+            <StudioHomeScreen
+              onNavigate={(screen) => setCurrentScreen(screen)}
+              onOpenQuickCreate={() => setIsQuickCreateOpen(true)}
+              recentProjects={projects}
+              onSelectProject={handleSelectProject}
+            />
+          )}
+        </main>
 
-      {/* Footer */}
-      <Footer />
+        {/* Footer */}
+        <Footer />
 
-      {/* Quick Create Modal */}
-      <QuickCreateModal
-        isOpen={isQuickCreateOpen}
-        onClose={() => setIsQuickCreateOpen(false)}
-        onCreateProject={(proj) => {
-          handleAddNewProject(proj);
-          setCurrentScreen('my-projects');
-        }}
-      />
+        {/* Quick Create Modal */}
+        <QuickCreateModal
+          isOpen={isQuickCreateOpen}
+          onClose={() => setIsQuickCreateOpen(false)}
+          onCreateProject={(proj) => {
+            handleAddNewProject(proj);
+            setCurrentScreen('my-projects');
+          }}
+        />
 
-      {/* Social Media Share Modal */}
-      <ShareModal
-        isOpen={shareModalConfig.isOpen}
-        platform={shareModalConfig.platform}
-        project={activeProject}
-        onClose={() =>
-          setShareModalConfig((prev) => ({ ...prev, isOpen: false }))
-        }
-        onSuccess={(msg) => showToast(msg, 'success')}
-      />
+        {/* Social Media Share Modal */}
+        <ShareModal
+          isOpen={shareModalConfig.isOpen}
+          platform={shareModalConfig.platform}
+          project={activeProject}
+          onClose={() =>
+            setShareModalConfig((prev) => ({ ...prev, isOpen: false }))
+          }
+          onSuccess={(msg) => showToast(msg, 'success')}
+        />
 
-      {/* Rename Modal */}
-      <RenameModal
-        isOpen={!!renameTargetProject}
-        project={renameTargetProject}
-        onClose={() => setRenameTargetProject(null)}
-        onSave={handleSaveRename}
-      />
+        {/* Rename Modal */}
+        <RenameModal
+          isOpen={!!renameTargetProject}
+          project={renameTargetProject}
+          onClose={() => setRenameTargetProject(null)}
+          onSave={handleSaveRename}
+        />
 
-      {/* Face & ID Shield Modal */}
-      <FaceShieldModal
-        isOpen={isFaceShieldOpen}
-        onClose={() => setIsFaceShieldOpen(false)}
-        onShowToast={showToast}
-      />
+        {/* Face & ID Shield Modal */}
+        <FaceShieldModal
+          isOpen={isFaceShieldOpen}
+          onClose={() => setIsFaceShieldOpen(false)}
+          onShowToast={showToast}
+        />
 
-      {/* Toast Notifications */}
-      <Toast toasts={toasts} onDismiss={handleDismissToast} />
-    </div>
+        {/* Toast Notifications */}
+        <Toast toasts={toasts} onDismiss={handleDismissToast} />
+      </div>
+    </MediaProvider>
   );
 }

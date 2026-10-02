@@ -58,33 +58,33 @@ export const MyProjectsScreen: React.FC<MyProjectsScreenProps> = ({
       {/* DASHBOARD SUB-NAV & TAB SUITE */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <span className="font-['JetBrains_Mono'] text-[10px] uppercase text-[#4cd7f6] tracking-wider font-semibold">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <span className="font-['JetBrains_Mono'] text-[9px] sm:text-[10px] uppercase text-[#4cd7f6] tracking-wider font-semibold">
               Workspace Pipeline
             </span>
             <span className="text-[#908fa0] text-[10px]">/</span>
-            <span className="font-['JetBrains_Mono'] text-[10px] text-[#c7c4d7] uppercase">
+            <span className="font-['JetBrains_Mono'] text-[9px] sm:text-[10px] text-[#c7c4d7] uppercase truncate">
               Deliverables & Repositories
             </span>
           </div>
-          <h1 className="font-['Space_Grotesk'] text-[26px] md:text-[30px] font-semibold text-[#e1e1f1] tracking-tight">
+          <h1 className="font-['Space_Grotesk'] text-[22px] sm:text-[26px] md:text-[30px] font-semibold text-[#e1e1f1] tracking-tight">
             My Projects & Exports
           </h1>
         </div>
 
-        {/* Segmented Navigation Pills */}
-        <div className="flex flex-wrap items-center gap-1 bg-[#191b26] p-1.5 rounded-xl border border-[#272935] shadow-inner">
+        {/* Segmented Navigation Pills - Horizontally scrollable on mobile */}
+        <div className="w-full lg:w-auto overflow-x-auto pb-1 lg:pb-0 flex items-center gap-1 bg-[#191b26] p-1 sm:p-1.5 rounded-xl border border-[#272935] shadow-inner">
           <button
             type="button"
             onClick={() => setActiveTab('all')}
-            className={`px-3.5 py-1.5 rounded-lg font-['Geist'] text-[13px] font-medium transition-all cursor-pointer ${
+            className={`shrink-0 whitespace-nowrap px-3 sm:px-3.5 py-1.5 rounded-lg font-['Geist'] text-xs sm:text-[13px] font-medium transition-all cursor-pointer ${
               activeTab === 'all'
                 ? 'bg-[#272935] text-[#e1e1f1] shadow-sm border border-[#373845]'
                 : 'text-[#c7c4d7] hover:text-[#e1e1f1] hover:bg-[#1d1f2a]'
             }`}
           >
             All Projects{' '}
-            <span className="font-['JetBrains_Mono'] text-[10px] ml-1 opacity-70">
+            <span className="font-['JetBrains_Mono'] text-[9px] sm:text-[10px] ml-1 opacity-70">
               {totalCount}
             </span>
           </button>
@@ -92,14 +92,14 @@ export const MyProjectsScreen: React.FC<MyProjectsScreenProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('exports')}
-            className={`px-3.5 py-1.5 rounded-lg font-['Geist'] text-[13px] font-medium transition-all cursor-pointer ${
+            className={`shrink-0 whitespace-nowrap px-3 sm:px-3.5 py-1.5 rounded-lg font-['Geist'] text-xs sm:text-[13px] font-medium transition-all cursor-pointer ${
               activeTab === 'exports'
                 ? 'bg-[#272935] text-[#e1e1f1] shadow-sm border border-[#373845]'
                 : 'text-[#c7c4d7] hover:text-[#e1e1f1] hover:bg-[#1d1f2a]'
             }`}
           >
             Completed Exports{' '}
-            <span className="font-['JetBrains_Mono'] text-[10px] ml-1 opacity-70">
+            <span className="font-['JetBrains_Mono'] text-[9px] sm:text-[10px] ml-1 opacity-70">
               {exportCount}
             </span>
           </button>
@@ -107,14 +107,14 @@ export const MyProjectsScreen: React.FC<MyProjectsScreenProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('drafts')}
-            className={`px-3.5 py-1.5 rounded-lg font-['Geist'] text-[13px] font-medium transition-all cursor-pointer ${
+            className={`shrink-0 whitespace-nowrap px-3 sm:px-3.5 py-1.5 rounded-lg font-['Geist'] text-xs sm:text-[13px] font-medium transition-all cursor-pointer ${
               activeTab === 'drafts'
                 ? 'bg-[#272935] text-[#e1e1f1] shadow-sm border border-[#373845]'
                 : 'text-[#c7c4d7] hover:text-[#e1e1f1] hover:bg-[#1d1f2a]'
             }`}
           >
             Drafts & Recreations{' '}
-            <span className="font-['JetBrains_Mono'] text-[10px] ml-1 opacity-70">
+            <span className="font-['JetBrains_Mono'] text-[9px] sm:text-[10px] ml-1 opacity-70">
               {draftCount}
             </span>
           </button>
@@ -122,7 +122,7 @@ export const MyProjectsScreen: React.FC<MyProjectsScreenProps> = ({
           <button
             type="button"
             onClick={() => setActiveTab('trash')}
-            className={`px-3.5 py-1.5 rounded-lg font-['Geist'] text-[13px] font-medium transition-all cursor-pointer ${
+            className={`shrink-0 whitespace-nowrap px-3 sm:px-3.5 py-1.5 rounded-lg font-['Geist'] text-xs sm:text-[13px] font-medium transition-all cursor-pointer ${
               activeTab === 'trash'
                 ? 'bg-[#272935] text-[#e1e1f1] shadow-sm border border-[#373845]'
                 : 'text-[#c7c4d7] hover:text-[#e1e1f1] hover:bg-[#1d1f2a]'

@@ -157,14 +157,14 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
                   </div>
 
                   {/* Quick action bar */}
-                  <div className="flex items-center justify-between pt-1 mt-auto border-t border-[#272935]/60">
-                    <div className="flex items-center gap-1.5">
+                  <div className="flex flex-wrap items-center justify-between gap-1.5 pt-2 mt-auto border-t border-[#272935]/60">
+                    <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
                       <button
                         type="button"
                         onClick={() => onSelectProject(proj)}
-                        className="px-2.5 py-1 rounded bg-[#272935] hover:bg-[#373845] text-[#e1e1f1] font-['JetBrains_Mono'] text-[10px] transition-colors flex items-center gap-1 cursor-pointer border border-[#373845]"
+                        className="px-2 sm:px-2.5 py-1 rounded bg-[#272935] hover:bg-[#373845] text-[#e1e1f1] font-['JetBrains_Mono'] text-[10px] transition-colors flex items-center gap-1 cursor-pointer border border-[#373845]"
                       >
-                        <span className="material-symbols-outlined text-[14px]">edit</span>
+                        <span className="material-symbols-outlined text-[13px] sm:text-[14px]">edit</span>
                         Open
                       </button>
 
@@ -172,18 +172,18 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
                         <button
                           type="button"
                           onClick={() => onDuplicateProject(proj)}
-                          className="px-2.5 py-1 rounded bg-[#272935] hover:bg-[#373845] text-[#e1e1f1] font-['JetBrains_Mono'] text-[10px] transition-colors flex items-center gap-1 cursor-pointer border border-[#373845]"
+                          className="px-2 sm:px-2.5 py-1 rounded bg-[#272935] hover:bg-[#373845] text-[#e1e1f1] font-['JetBrains_Mono'] text-[10px] transition-colors flex items-center gap-1 cursor-pointer border border-[#373845]"
                         >
-                          <span className="material-symbols-outlined text-[14px]">content_copy</span>
+                          <span className="material-symbols-outlined text-[13px] sm:text-[14px]">content_copy</span>
                           Duplicate
                         </button>
                       ) : (
                         <button
                           type="button"
                           onClick={() => onOpenRenameModal(proj)}
-                          className="px-2.5 py-1 rounded bg-[#272935] hover:bg-[#373845] text-[#e1e1f1] font-['JetBrains_Mono'] text-[10px] transition-colors flex items-center gap-1 cursor-pointer border border-[#373845]"
+                          className="px-2 sm:px-2.5 py-1 rounded bg-[#272935] hover:bg-[#373845] text-[#e1e1f1] font-['JetBrains_Mono'] text-[10px] transition-colors flex items-center gap-1 cursor-pointer border border-[#373845]"
                         >
-                          <span className="material-symbols-outlined text-[14px]">
+                          <span className="material-symbols-outlined text-[13px] sm:text-[14px]">
                             drive_file_rename_outline
                           </span>
                           Rename
@@ -193,17 +193,17 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
                       <button
                         type="button"
                         onClick={() => onDeleteProject(proj.id)}
-                        className="px-2 py-1 rounded hover:bg-[#ffb4ab]/20 text-[#c7c4d7] hover:text-[#ffb4ab] font-['JetBrains_Mono'] text-[10px] transition-colors cursor-pointer"
+                        className="px-1.5 sm:px-2 py-1 rounded hover:bg-[#ffb4ab]/20 text-[#c7c4d7] hover:text-[#ffb4ab] font-['JetBrains_Mono'] text-[10px] transition-colors cursor-pointer"
                         title="Delete edit"
                       >
-                        <span className="material-symbols-outlined text-[14px]">delete</span>
+                        <span className="material-symbols-outlined text-[13px] sm:text-[14px]">delete</span>
                       </button>
                     </div>
 
                     <button
                       type="button"
                       onClick={() => onReExportProject(proj)}
-                      className="text-[#4cd7f6] hover:underline font-['JetBrains_Mono'] text-[10px] font-semibold flex items-center gap-1 cursor-pointer"
+                      className="text-[#4cd7f6] hover:underline font-['JetBrains_Mono'] text-[10px] font-semibold flex items-center gap-1 cursor-pointer ml-auto sm:ml-0"
                     >
                       Re-export
                       <span className="material-symbols-outlined text-[12px]">arrow_forward</span>
@@ -222,7 +222,7 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
             return (
               <div
                 key={proj.id}
-                className={`flex items-center justify-between p-3 rounded-xl bg-[#191b26] hover:bg-[#1d1f2a] transition-all border ${
+                className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl bg-[#191b26] hover:bg-[#1d1f2a] transition-all border ${
                   isSelected ? 'border-[#4cd7f6] bg-[#1d1f2a]' : 'border-[#272935]'
                 }`}
               >
@@ -233,34 +233,34 @@ export const ProjectsList: React.FC<ProjectsListProps> = ({
                   <img
                     src={proj.imageUrl}
                     alt={proj.title}
-                    className="w-16 h-10 object-cover rounded-lg shrink-0 border border-[#272935]"
+                    className="w-14 sm:w-16 h-10 object-cover rounded-lg shrink-0 border border-[#272935]"
                   />
                   <div className="flex flex-col min-w-0">
                     <span className="text-sm font-semibold text-[#e1e1f1] truncate">
                       {proj.title}
                     </span>
-                    <span className="text-[11px] text-[#c7c4d7]">
+                    <span className="text-[11px] text-[#c7c4d7] truncate">
                       {proj.category} • {proj.duration} • {proj.createdAt}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 self-end sm:self-auto">
                   <button
                     onClick={() => onSelectProject(proj)}
-                    className="px-2.5 py-1 text-xs rounded bg-[#272935] hover:bg-[#373845] text-[#e1e1f1]"
+                    className="px-2.5 py-1 text-xs rounded bg-[#272935] hover:bg-[#373845] text-[#e1e1f1] cursor-pointer"
                   >
                     Open
                   </button>
                   <button
                     onClick={() => onDuplicateProject(proj)}
-                    className="px-2.5 py-1 text-xs rounded bg-[#272935] hover:bg-[#373845] text-[#e1e1f1]"
+                    className="px-2.5 py-1 text-xs rounded bg-[#272935] hover:bg-[#373845] text-[#e1e1f1] cursor-pointer"
                   >
                     Duplicate
                   </button>
                   <button
                     onClick={() => onReExportProject(proj)}
-                    className="px-2.5 py-1 text-xs rounded text-[#4cd7f6] hover:bg-[#4cd7f6]/10"
+                    className="px-2.5 py-1 text-xs rounded text-[#4cd7f6] hover:bg-[#4cd7f6]/10 cursor-pointer"
                   >
                     Re-export
                   </button>

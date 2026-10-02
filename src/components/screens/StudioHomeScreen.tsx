@@ -41,18 +41,25 @@ export const StudioHomeScreen: React.FC<StudioHomeScreenProps> = ({
 
           <div className="flex flex-wrap items-center gap-3">
             <button
-              onClick={onOpenQuickCreate}
+              onClick={() => onNavigate('ai-recreate-and-edit')}
               className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#8083ff] to-[#4cd7f6] text-[#001f26] font-semibold text-xs shadow-lg hover:brightness-110 active:scale-98 transition-all flex items-center gap-1.5 cursor-pointer"
             >
-              <span className="material-symbols-outlined text-[18px]">add</span>
-              <span>Quick Create Edit</span>
+              <span className="material-symbols-outlined text-[18px]">cloud_upload</span>
+              <span>Upload Footage & Edit</span>
+            </button>
+            <button
+              onClick={onOpenQuickCreate}
+              className="px-4 py-2.5 rounded-xl bg-[#272935] hover:bg-[#373845] text-[#e1e1f1] font-semibold text-xs border border-[#373845] transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
+              <span>Quick Create</span>
             </button>
             <button
               onClick={() => onNavigate('my-projects')}
-              className="px-4 py-2.5 rounded-xl bg-[#272935] hover:bg-[#373845] text-[#e1e1f1] font-semibold text-xs border border-[#373845] transition-all flex items-center gap-1.5 cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-[#272935] hover:bg-[#373845] text-[#c7c4d7] hover:text-[#e1e1f1] font-semibold text-xs border border-[#373845] transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <span className="material-symbols-outlined text-[18px]">folder</span>
-              <span>Open My Projects</span>
+              <span>My Projects</span>
             </button>
           </div>
         </div>

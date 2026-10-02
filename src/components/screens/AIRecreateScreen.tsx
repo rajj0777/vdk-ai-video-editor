@@ -1,10 +1,17 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import React, { useState } from 'react';
-import { ASSETS } from '../../data/mockData';
+import { useMedia } from '../../context/MediaContext';
 import { Project } from '../../types';
+import { ReferenceVideoUploader } from '../ReferenceVideoUploader';
+import { MediaUploader } from '../MediaUploader';
 
 interface AIRecreateScreenProps {
   onAddNewProject: (project: Project) => void;
-  onShowToast: (message: string, type?: 'success' | 'info') => void;
+  onShowToast: (message: string, type?: 'success' | 'info' | 'error') => void;
   onNavigateToProjects: () => void;
 }
 
@@ -13,57 +20,96 @@ export const AIRecreateScreen: React.FC<AIRecreateScreenProps> = ({
   onShowToast,
   onNavigateToProjects,
 }) => {
-  const [referenceUrl, setReferenceUrl] = useState('');
+  const { userMedia, referenceMedia, hasReference, hasUserMedia } = useMedia();
+
   const [selectedStyle, setSelectedStyle] = useState('speed-ramp');
   const [beatSyncLock, setBeatSyncLock] = useState(true);
   const [horizonLock, setHorizonLock] = useState(true);
   const [bpmDetection, setBpmDetection] = useState(132);
   const [lutProfile, setLutProfile] = useState('Teal & Orange Rec.709');
-  const [isSynthesizing, setIsSynthesizing] = useState(false);
-  const [synthStage, setSynthStage] = useState('');
 
-  const handleLaunchSynthesis = () => {
-    setIsSynthesizing(true);
-    setSynthStage('Extracting audio cadence & peak frequency transients...');
+  // Multi-stage upload and processing state (Sections 9 & 10 requirement)
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [processStage, setProcessStage] = useState<string>('');
+  const [uploadPercent, setUploadPercent] = useState<number>(0);
+
+  const canCreate = hasReference && hasUserMedia;
+
+  const handleCreateVDKEdit = async () => {
+    if (!canCreate) {
+      if (!hasUserMedia) {
+        onShowToast('Upload at least one photo or video to continue.', 'error');
+      } else if (!hasReference) {
+        onShowToast('Select or upload a reference video to continue.', 'error');
+      }
+      return;
+    }
+
+    setIsProcessing(true);
+    setUploadPercent(15);
+    setProcessStage('Uploading media...');
 
     setTimeout(() => {
-      setSynthStage('Computing optical velocity flow & speed ramp keyframes...');
-    }, 1000);
+      setUploadPercent(65);
+      setProcessStage('Uploading media...');
+    }, 700);
 
     setTimeout(() => {
-      setSynthStage('Synthesizing horizon lock & 3D camera re-projection...');
-    }, 2000);
+      setUploadPercent(100);
+      setProcessStage('Analyzing reference...');
+    }, 1400);
 
     setTimeout(() => {
-      setSynthStage('Color balance & LUT spectral transfer complete. Lossless container ready.');
-    }, 3000);
+      setProcessStage('Preparing AI edit...');
+    }, 2400);
 
     setTimeout(() => {
-      setIsSynthesizing(false);
+      setProcessStage('Creating timeline...');
+    }, 3400);
+
+    setTimeout(() => {
+      setIsProcessing(false);
+
+      // Extract visual thumbnail from real user media
+      const firstMedia = userMedia[0];
+      const previewImg = firstMedia?.previewUrl || '';
+      const isFirstVideo = firstMedia?.type === 'video';
+
+      const referenceTitle =
+        referenceMedia?.sourceType === 'file'
+          ? referenceMedia.name?.replace(/\.[^/.]+$/, '') || 'Uploaded Video'
+          : referenceMedia?.url
+          ? new URL(referenceMedia.url).pathname.split('/').filter(Boolean).pop() || 'Web Cadence'
+          : 'Viral Beat Recreate';
+
       const newEdit: Project = {
-        id: `EXP-${Math.floor(10000 + Math.random() * 90000)}-RECR`,
-        title: referenceUrl.trim()
-          ? `Viral Cadence Recreate - ${new URL(referenceUrl).hostname || 'Web'}`
-          : 'Viral Tokyo Cadence - Neural Recreate',
+        id: `EXP-${Math.floor(10000 + Math.random() * 90000)}-VDK`,
+        title: `${referenceTitle} • Recreate`,
         category: 'BEAT-SYNCED MASTER',
-        duration: '00:22.10',
-        durationSeconds: 22.1,
+        duration: firstMedia?.durationFormatted || '00:22.50',
+        durationSeconds: firstMedia?.duration || 22.5,
         createdAt: 'Just now',
-        spec: `Recreated from viral audio cadence with ${bpmDetection} BPM lock, horizon stabilization, and ${lutProfile}.`,
-        imageUrl: ASSETS.tokyoNeon,
+        spec: `Assembled from ${userMedia.length} user clip${
+          userMedia.length === 1 ? '' : 's'
+        } with ${bpmDetection} BPM cadence lock, ${lutProfile}, and lossless NVENC container.`,
+        imageUrl: previewImg,
+        videoUrl: isFirstVideo ? previewImg : undefined,
         status: 'exported',
         aspectRatio: '9:16',
         resolution: '1080p',
         bpm: bpmDetection,
-        gpuLatency: '7.8s total',
-        fileSize: '41.2 MB',
+        gpuLatency: 'Ready in flight-deck',
+        fileSize: `${Math.max(12, Math.round(userMedia.reduce((acc, m) => acc + m.size, 0) / (1024 * 1024)))} MB`,
         isFaceShielded: true,
       };
 
       onAddNewProject(newEdit);
-      onShowToast('New neural recreate rendered and loaded into Flight-Deck!', 'success');
+      onShowToast(
+        `Created VDK Edit with ${userMedia.length} footage items! Loaded in Flight-Deck.`,
+        'success'
+      );
       onNavigateToProjects();
-    }, 3800);
+    }, 4400);
   };
 
   return (
@@ -76,83 +122,43 @@ export const AIRecreateScreen: React.FC<AIRecreateScreenProps> = ({
           </span>
           <span className="text-[#908fa0] text-[10px]">/</span>
           <span className="font-['JetBrains_Mono'] text-[10px] text-[#c7c4d7] uppercase">
-            Audio Cadence & Motion Ramp Sync
+            Audio Cadence & Footage Pipeline
           </span>
         </div>
-        <h1 className="font-['Space_Grotesk'] text-[26px] md:text-[30px] font-semibold text-[#e1e1f1] tracking-tight">
+        <h1 className="font-['Space_Grotesk'] text-[24px] sm:text-[28px] md:text-[32px] font-semibold text-[#e1e1f1] tracking-tight">
           AI Recreate & Edit
         </h1>
-        <p className="text-xs text-[#c7c4d7]">
-          Paste any viral reel or audio link. VDK reverse-engineers the speed ramps, cuts, and color
-          profile into a master project.
+        <p className="text-xs sm:text-sm text-[#c7c4d7] max-w-2xl">
+          Upload reference audio or footage from your device, add your personal clips and photos,
+          and VDK will synthesize a beat-synced optical timeline.
         </p>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
-        {/* Left 7 cols: Audio Cadence & Parameters */}
-        <div className="xl:col-span-7 flex flex-col gap-5">
-          {/* Reference Input Card */}
+        {/* Left Column (xl:col-span-7): Reference + User Footage Uploaders */}
+        <div className="xl:col-span-7 flex flex-col gap-6">
+          {/* Section 4: REFERENCE VIDEO UPLOADER */}
+          <ReferenceVideoUploader
+            bpmDetection={bpmDetection}
+            onBpmChange={setBpmDetection}
+            onShowToast={onShowToast}
+          />
+
+          {/* Section 5 & 6: USER PHOTOS & VIDEOS (YOUR FOOTAGE) */}
           <div className="p-5 rounded-2xl bg-[#191b26] border border-[#272935] shadow-xl flex flex-col gap-4">
-            <h3 className="font-semibold text-sm text-[#e1e1f1] flex items-center gap-2">
-              <span className="material-symbols-outlined text-[#4cd7f6] text-[20px]">link</span>
-              Reference Audio & Video Source
-            </h3>
-
-            <div className="flex gap-2">
-              <div className="relative flex-1">
-                <input
-                  type="url"
-                  placeholder="Paste Instagram Reel, TikTok, or YouTube Short URL..."
-                  value={referenceUrl}
-                  onChange={(e) => setReferenceUrl(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#11131e] border border-[#272935] text-xs text-[#e1e1f1] placeholder:text-[#908fa0] focus:outline-none focus:border-[#4cd7f6]"
-                />
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setReferenceUrl('https://instagram.com/reel/C8_Amalfi_SpeedSync_Master');
-                  onShowToast('Sample viral reel URL populated', 'info');
-                }}
-                className="px-3.5 py-2.5 rounded-xl bg-[#272935] hover:bg-[#373845] text-xs font-semibold text-[#e1e1f1] border border-[#373845] shrink-0"
-              >
-                Sample URL
-              </button>
-            </div>
-
-            {/* Cadence Extractor Box */}
-            <div className="p-4 rounded-xl bg-[#0b0e18] border border-[#272935] flex flex-col gap-3">
-              <div className="flex items-center justify-between text-xs font-mono">
-                <span className="text-[#c7c4d7]">DETECTED CADENCE: HIGH TEMPO</span>
-                <span className="text-[#4cd7f6] font-semibold">{bpmDetection} BPM (LOCKED)</span>
-              </div>
-
-              {/* Dynamic waveform representation */}
-              <div className="w-full h-12 bg-[#11131e] rounded-lg p-2 border border-[#272935] flex items-center">
-                <svg className="w-full h-full text-[#4cd7f6]" fill="none" viewBox="0 0 300 30">
-                  <path
-                    d="M0 15 L20 15 L25 4 L30 26 L35 8 L40 22 L45 15 L70 15 L75 2 L80 28 L85 6 L90 24 L95 15 L120 15 L125 5 L130 25 L135 10 L140 20 L145 15 L170 15 L175 1 L180 29 L185 4 L190 26 L195 15 L220 15 L225 6 L230 24 L235 12 L240 18 L245 15 L270 15 L275 3 L280 27 L285 7 L290 23 L295 15 L300 15"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-
-              <div className="flex items-center justify-between text-[11px] font-mono text-[#908fa0]">
-                <span>00:00 Intro Drop</span>
-                <span>00:08 Beat Spike</span>
-                <span>00:15 Climax Velocity</span>
-                <span>00:22 Outro S-Curve</span>
-              </div>
-            </div>
+            <MediaUploader
+              onShowToast={onShowToast}
+              title="Your Footage"
+              subtitle="Upload your videos and photos. Drag & drop or pick from your device library."
+            />
           </div>
 
-          {/* Speed Ramp Motion Curves */}
+          {/* Optical Speed-Ramp Motion Curves */}
           <div className="p-5 rounded-2xl bg-[#191b26] border border-[#272935] shadow-xl flex flex-col gap-4">
             <h3 className="font-semibold text-sm text-[#e1e1f1] flex items-center gap-2">
-              <span className="material-symbols-outlined text-[#c0c1ff] text-[20px]">show_chart</span>
+              <span className="material-symbols-outlined text-[#c0c1ff] text-[20px]">
+                show_chart
+              </span>
               Optical Speed-Ramp Curves
             </h3>
 
@@ -209,11 +215,13 @@ export const AIRecreateScreen: React.FC<AIRecreateScreenProps> = ({
           </div>
         </div>
 
-        {/* Right 5 cols: Style LUT & Master Synthesis Trigger */}
-        <div className="xl:col-span-5 flex flex-col gap-5">
+        {/* Right Column (xl:col-span-5): Style LUT & Create VDK Edit CTA */}
+        <div className="xl:col-span-5 flex flex-col gap-6">
           <div className="p-5 rounded-2xl bg-[#191b26] border border-[#272935] shadow-xl flex flex-col gap-4">
             <h3 className="font-semibold text-sm text-[#e1e1f1] flex items-center gap-2">
-              <span className="material-symbols-outlined text-[#acedff] text-[20px]">palette</span>
+              <span className="material-symbols-outlined text-[#acedff] text-[20px]">
+                palette
+              </span>
               Color Spectral LUT Match
             </h3>
 
@@ -246,33 +254,115 @@ export const AIRecreateScreen: React.FC<AIRecreateScreenProps> = ({
               ))}
             </div>
 
-            {/* Synthesize CTA */}
-            <div className="pt-3 border-t border-[#272935] flex flex-col gap-2">
-              {isSynthesizing ? (
-                <div className="p-4 rounded-xl bg-[#0b0e18] border border-[#4cd7f6] flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[#4cd7f6] animate-spin text-[20px]">
-                      sync
-                    </span>
-                    <span className="text-xs font-semibold text-[#4cd7f6]">
-                      GPU Render in Progress...
-                    </span>
+            {/* Preparation Summary Box */}
+            <div className="p-3.5 rounded-xl bg-[#0b0e18] border border-[#272935] flex flex-col gap-2 text-xs font-mono">
+              <div className="flex items-center justify-between">
+                <span className="text-[#908fa0]">Reference Source:</span>
+                <span className="text-[#4cd7f6] font-semibold truncate max-w-[180px]">
+                  {referenceMedia?.sourceType === 'file'
+                    ? referenceMedia.name
+                    : referenceMedia?.url
+                    ? 'Web URL Linked'
+                    : 'None Selected'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[#908fa0]">User Footage:</span>
+                <span className="text-[#e1e1f1] font-semibold">
+                  {userMedia.length} {userMedia.length === 1 ? 'item' : 'items'} loaded
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[#908fa0]">Audio Cadence:</span>
+                <span className="text-[#d0bcff] font-semibold">{bpmDetection} BPM Sync</span>
+              </div>
+            </div>
+
+            {/* Section 9 & 10: CREATE MY VDK EDIT & MULTI-STAGE UPLOAD STATE */}
+            <div className="pt-3 border-t border-[#272935] flex flex-col gap-2.5">
+              {isProcessing ? (
+                /* Multi-Stage Upload & Pipeline State */
+                <div className="p-4 rounded-xl bg-[#0b0e18] border border-[#4cd7f6] flex flex-col gap-2.5 shadow-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[#4cd7f6] animate-spin text-[20px]">
+                        sync
+                      </span>
+                      <span className="text-xs font-semibold text-[#4cd7f6]">
+                        {processStage}
+                      </span>
+                    </div>
+                    {processStage === 'Uploading media...' && (
+                      <span className="font-['JetBrains_Mono'] text-xs text-[#4cd7f6] font-bold">
+                        {uploadPercent}%
+                      </span>
+                    )}
                   </div>
-                  <span className="text-[11px] font-mono text-[#c7c4d7]">{synthStage}</span>
-                  <div className="w-full h-1 bg-[#272935] rounded-full overflow-hidden mt-1">
-                    <div className="h-full bg-gradient-to-r from-[#8083ff] to-[#4cd7f6] animate-pulse w-4/5 rounded-full"></div>
+
+                  <div className="w-full h-1.5 bg-[#272935] rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-[#8083ff] to-[#4cd7f6] transition-all duration-300 rounded-full"
+                      style={{
+                        width:
+                          processStage === 'Uploading media...'
+                            ? `${uploadPercent}%`
+                            : processStage === 'Analyzing reference...'
+                            ? '55%'
+                            : processStage === 'Preparing AI edit...'
+                            ? '80%'
+                            : '95%',
+                      }}
+                    ></div>
+                  </div>
+
+                  <div className="flex items-center justify-between text-[10px] font-mono text-[#908fa0]">
+                    <span className={processStage === 'Uploading media...' ? 'text-[#4cd7f6]' : ''}>
+                      1. Upload
+                    </span>
+                    <span className={processStage === 'Analyzing reference...' ? 'text-[#4cd7f6]' : ''}>
+                      2. Analysis
+                    </span>
+                    <span className={processStage === 'Preparing AI edit...' ? 'text-[#4cd7f6]' : ''}>
+                      3. Synthesis
+                    </span>
+                    <span className={processStage === 'Creating timeline...' ? 'text-[#4cd7f6]' : ''}>
+                      4. Timeline
+                    </span>
                   </div>
                 </div>
               ) : (
-                <button
-                  type="button"
-                  onClick={handleLaunchSynthesis}
-                  className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#8083ff] to-[#4cd7f6] text-[#001f26] font-semibold text-sm shadow-xl hover:brightness-110 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <span className="material-symbols-outlined text-[20px]">auto_fix_high</span>
-                  <span>Synthesize Neural Recreate Edit</span>
-                </button>
+                /* CTA Button */
+                <div className="flex flex-col gap-2">
+                  <button
+                    type="button"
+                    onClick={handleCreateVDKEdit}
+                    disabled={!canCreate}
+                    className={`w-full py-3.5 px-4 rounded-xl font-semibold text-sm shadow-xl flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                      canCreate
+                        ? 'bg-gradient-to-r from-[#8083ff] to-[#4cd7f6] text-[#001f26] hover:brightness-110 active:scale-98'
+                        : 'bg-[#272935] text-[#908fa0] cursor-not-allowed border border-[#373845]'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[20px]">
+                      {canCreate ? 'auto_fix_high' : 'lock'}
+                    </span>
+                    <span>Create My VDK Edit</span>
+                  </button>
+
+                  {/* Section 9 Guidance message if criteria not met */}
+                  {!canCreate && (
+                    <div className="p-2.5 rounded-lg bg-[#0b0e18] border border-[#ffb4ab]/20 text-center text-xs text-[#ffb4ab] font-medium flex items-center justify-center gap-1.5">
+                      <span className="material-symbols-outlined text-[16px]">info</span>
+                      <span>
+                        {!hasUserMedia
+                          ? 'Upload at least one photo or video to continue.'
+                          : 'Select or upload a reference video to continue.'}
+                      </span>
+                    </div>
+                  )}
+                </div>
               )}
+
               <span className="text-[10px] font-mono text-[#908fa0] text-center">
                 100% Free Export • Zero Render Queues • Lossless H.265 Master
               </span>
